@@ -18,7 +18,6 @@ can be checked before you run the actual line.
 **[Read more about PHPStan on Medium.com »](https://medium.com/@ondrejmirtes/phpstan-2939cd0ad0e3)**
 
 ## Is PHPStan helping you to avoid bugs in production?
-## Consider [supporting it on Patreon](https://www.patreon.com/phpstan) so I'm able to make it even more awesome!
 
 It currently performs the following checks on your code:
 
