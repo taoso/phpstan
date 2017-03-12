@@ -2,5 +2,5 @@
 /conf/config.local.yml
 /vendor
 /.idea
-/.phpcd/
+/.phpcd*
 /tests/tmp/
