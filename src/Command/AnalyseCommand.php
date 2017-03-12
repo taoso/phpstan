@@ -77,12 +77,12 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
             $interfaces = class_implements($extensionName);
             foreach ($interfaces as $interface) {
                 switch ($interface) {
-                case PropertiesClassReflectionExtension::class:
-                case MethodsClassReflectionExtension::class:
-                case DynamicMethodReturnTypeExtension::class:
-                case DynamicStaticMethodReturnTypeExtension::class:
-                    $extensionDefinitions[$interface][] = \DI\get($extensionName);
-                    break;
+                    case PropertiesClassReflectionExtension::class:
+                    case MethodsClassReflectionExtension::class:
+                    case DynamicMethodReturnTypeExtension::class:
+                    case DynamicStaticMethodReturnTypeExtension::class:
+                        $extensionDefinitions[$interface][] = \DI\get($extensionName);
+                        break;
                 }
             }
         }
@@ -116,13 +116,13 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
         }
 
         switch ($levelOption) {
-        case 2:
-            $container->set('checkThisOnly', false);
-            break;
-        case 5:
-            $container->set('checkFunctionArgumentTypes', true);
-            $container->set('enableUnionTypes', true);
-            break;
+            case 2:
+                $container->set('checkThisOnly', false);
+                break;
+            case 5:
+                $container->set('checkFunctionArgumentTypes', true);
+                $container->set('enableUnionTypes', true);
+                break;
         }
 
         $rules = $input->getOption(self::OPTION_RULE);
