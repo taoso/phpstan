@@ -64,6 +64,12 @@ not only static analysis tools but also other people that work with the code to 
 
 ## Installation
 
+We recommend you download the [`phpstan.phar`](/lvht/phpstan/releases/download/untagged-6de55632c924a49640fb/phpstan.phar).
+
+If you want to build `phpstan.phar` manually, you need clone the project,
+and then run `composer update --no-dev`, and then go to the parent dir and
+run [`phar-composer`](/clue/phar-composer).
+
 To start performing analysis on your code, require PHPStan in [Composer](https://getcomposer.org/):
 
 ```
