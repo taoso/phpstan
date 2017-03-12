@@ -139,7 +139,7 @@ class ReturnTypeRuleTest extends \PHPStan\Rules\AbstractRuleTest
         $this->analyse([__DIR__ . '/data/returnTypes-7.0.php'], [
             [
                 'Method ReturnTypes\FooPhp70::returnInteger() should return int but empty return statement found.',
-                10,
+                9,
             ],
         ]);
     }
