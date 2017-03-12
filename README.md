@@ -72,8 +72,6 @@ composer require --dev lvht/phpstan
 
 Composer will install PHPStan's executable in its `bin-dir` which defaults to `vendor/bin`.
 
-You can also use [PHPStan via Docker](https://github.com/phpstan/docker-image).
-
 ## First run
 
 To let PHPStan analyse your codebase, you have use the `analyse` commmand and point it to the right directories.
@@ -110,10 +108,6 @@ There's also **experimental** level 5 that currently enables:
 * Union types (Foo|Bar will be a specified type with checks performed on it instead of mixed)
 * Checking function and method argument types when calling them
 
-## ~~Configuration~~
-
-Only option is supported.
-
 ### Autoloading
 
 PHPStan uses Composer autoloader so the easiest way how to autoload classes
@@ -149,9 +143,6 @@ String at each line is used as a pattern for the [`fnmatch`](https://secure.php.
 phpstan analyse --ignore-path='tests/*/data/*' src tests
 ```
 
-### ~~Include custom extensions~~
-Only support check php file.
-
 ### Universal object crates [TODO]
 
 Classes without predefined structure are common in PHP applications.
@@ -163,16 +154,6 @@ with these characteristics are used in your codebase:
 This need another option.
 
 ### Add non-obviously assigned variables to scope [TODO]
-
-If you use the initial assignment variable after for-loop or while-loop, set `polluteScopeWithLoopInitialAssignments` boolean parameter to `true`.
-
-```php
-for ($i = 0; $i < count($list); $i++) {
-	// ...
-}
-
-echo $i;
-```
 
 If you use some variables from a try block in your catch blocks, set `polluteCatchScopeWithTryAssignments` boolean parameter to `true`.
 
@@ -238,18 +219,6 @@ if (somethingIsTrue()) {
 doFoo($foo);
 ```
 
-These methods can be configured by specifying a class on whose instance they are called like this:
-
-```yaml
-parameters:
-	earlyTerminatingMethodCalls:
-		Nette\Application\UI\Presenter:
-			- redirect
-			- redirectUrl
-			- sendJson
-			- sendResponse
-```
-
 ### Ignore error messages with regular expresions
 
 If some issue in your code base is not easy to fix or just simply want to deal with it later,
@@ -262,13 +231,6 @@ phpstan analyse --ignore-error='Call to an undefined method [a-zA-Z0-9\\_]+::met
 	--ignore-error='Call to an undefined method PHPUnit_Framework_MockObject_MockObject::[a-zA-Z0-9_]+\(\)' \
 	src tests
 ```
-
-`reportUnmatchedIgnoredErrors` has been removed. The `--ignore-error` option will
-never pollute the result list.
-
-### ~~Bootstrap file~~
-
-Use the `--autoload-path|-a` option instead.
 
 ### Custom rules
 
@@ -491,4 +453,5 @@ This will be solved in the future by prefixing the namespaces of PHPStan's depen
 
 ## Code of Conduct
 
-This project adheres to a [Contributor Code of Conduct](https://github.com/phpstan/phpstan/blob/master/CODE_OF_CONDUCT.md). By participating in this project and its community, you are expected to uphold this code.
+This project adheres to a [Contributor Code of Conduct](https://github.com/phpstan/phpstan/blob/master/CODE_OF_CONDUCT.md).
+By participating in this project and its community, you are expected to uphold this code.
