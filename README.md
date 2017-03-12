@@ -4,7 +4,7 @@ Why I want make my own fork? See the [story](why-fork.md).
 
 [![Build Status](https://travis-ci.org/lvht/phpstan.svg?branch=master)](https://travis-ci.org/lvht/phpstan)
 [![Latest Stable Version](https://poser.pugx.org/lvht/phpstan/v/stable)](https://packagist.org/packages/lvht/phpstan)
-[![License](https://poser.pugx.org/phpstan/lvht/license)](https://packagist.org/packages/lvht/phpstan)
+[![License](https://poser.pugx.org/lvht/phpstan/license)](https://packagist.org/packages/lvht/phpstan)
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat)](https://github.com/lvht/phpstan)
 
 PHPStan focuses on finding errors in your code without actually running it. It catches whole classes of bugs
