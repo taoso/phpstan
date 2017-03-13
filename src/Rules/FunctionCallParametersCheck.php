@@ -76,7 +76,7 @@ class FunctionCallParametersCheck
             }
         }
 
-        if ($invokedParametersCount < $functionParametersMinCount || $invokedParametersCount > $functionParametersMaxCount) {
+        if ($invokedParametersCount < $functionParametersMinCount || ($functionParametersMaxCount > 0 && $invokedParametersCount > $functionParametersMaxCount)) {
             if ($functionParametersMinCount === $functionParametersMaxCount) {
                 $errors[] = sprintf(
                     $invokedParametersCount === 1 ? $messages[0] : $messages[1],
