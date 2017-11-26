@@ -3,13 +3,11 @@
 namespace PHPStan\Command;
 
 use PHPStan\Analyser\Analyser;
-use PHPStan\Analyser\Error;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
 class AnalyseApplication
 {
-
     /**
      * @var \PHPStan\Analyser\Analyser
      */

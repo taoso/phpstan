@@ -12,7 +12,7 @@ $rootDir = __DIR__ . '/..';
 $confDir = $rootDir . '/conf';
 
 $builder = new \DI\ContainerBuilder();
-$builder->addDefinitions($confDir.'/config.php');
+$builder->addDefinitions($confDir.'/di.php');
 
 $container = $builder->build();
 $container->set(\Interop\Container\ContainerInterface::class, $container);

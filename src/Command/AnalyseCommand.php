@@ -19,7 +19,6 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
     const NAME = 'analyse';
 
     const OPTION_LEVEL = 'level';
-    const OPTION_NO_PROGRESS = 'no-progress';
     const OPTION_RULE = 'rule';
     const OPTION_AUTOLOAD_FILE = 'autoload-file';
     const OPTION_EXCLUED_RULE = 'exclude-rule';
@@ -36,7 +35,6 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
             ->setDefinition([
                 new InputArgument('paths', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Paths with source code to run analysis on'),
                 new InputOption(self::OPTION_LEVEL, 'l', InputOption::VALUE_REQUIRED, 'Level of rule options - the higher the stricter'),
-                new InputOption(self::OPTION_NO_PROGRESS, null, InputOption::VALUE_NONE, 'Do not show progress bar, only results'),
                 new InputOption(self::OPTION_AUTOLOAD_FILE, 'a', InputOption::VALUE_OPTIONAL|InputOption::VALUE_IS_ARRAY, 'Project\'s additional autoload file path'),
                 new InputOption(self::OPTION_RULE, 'r', InputOption::VALUE_OPTIONAL|InputOption::VALUE_IS_ARRAY, "Rule to be used. use FQCN for custom rule. the builtin rules:\n".implode("\n", RegistryFactory::getRuleArgList(65535))),
                 new InputOption(self::OPTION_EXCLUED_RULE, 'R', InputOption::VALUE_OPTIONAL|InputOption::VALUE_IS_ARRAY, "Rule to be excluded"),
@@ -45,7 +43,6 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
                 new InputOption(self::OPTION_EXTENSION, 'x', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Extension class name to be used, must be FQCN'),
             ]);
     }
-
 
     public function getAliases(): array
     {
@@ -61,11 +58,8 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
             }
         }
 
-        $rootDir = __DIR__ . '/../..';
-        $confDir = $rootDir . '/conf';
-
         $builder = new \DI\ContainerBuilder();
-        $builder->addDefinitions($confDir.'/config.php');
+        $builder->addDefinitions(__DIR__.'/../../conf/di.php');
 
         $extensionDefinitions = [];
         $extensionNames = $input->getOption(self::OPTION_EXTENSION);
@@ -106,13 +100,7 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
         }
 
         $levelOption = $input->getOption(self::OPTION_LEVEL);
-        $defaultLevelUsed = false;
-        if ($levelOption === null) {
-            $levelOption = self::DEFAULT_LEVEL;
-            $defaultLevelUsed = true;
-        } else {
-            $levelOption = (int) $levelOption;
-        }
+        $levelOption = $levelOption ? (int) $levelOption : self::DEFAULT_LEVEL;
 
         switch ($levelOption) {
             case 2:
@@ -144,11 +132,7 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
         }
 
         $application = $container->get(AnalyseApplication::class);
-        return $application->analyse(
-            $input->getArgument('paths'),
-            $output,
-            $stderr,
-            $defaultLevelUsed
-        );
+
+        return $application->analyse($input->getArgument('paths'), $output, $stderr);
     }
 }

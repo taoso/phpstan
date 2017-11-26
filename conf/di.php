@@ -2,6 +2,7 @@
 use Interop\Container\ContainerInterface;
 use PHPStan\Reflection\PropertiesClassReflectionExtension;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
+use PHPStan\Reflection as r;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\DynamicStaticMethodReturnTypeExtension;
 
@@ -80,23 +81,23 @@ $services = [
         'originalParser' => PHPStan\Parser\Parser::class,
     ]),
 
-    PHPStan\Reflection\Php\UniversalObjectCratesClassReflectionExtension::class => $obj([
+    r\Php\UniversalObjectCratesClassReflectionExtension::class => $obj([
         'classes' => 'universalObjectCratesClasses',
     ]),
 
-    PHPStan\Reflection\Php\PhpMethodReflectionFactory::class => DI\object(PHPStan\Reflection\Php\PhpMethodReflectionFactoryDI::class),
+    r\Php\PhpMethodReflectionFactory::class => DI\object(r\Php\PhpMethodReflectionFactoryDI::class),
 
-    PHPStan\Reflection\FunctionReflectionFactory::class => DI\object(PHPStan\Reflection\FunctionReflectionFactoryDI::class),
+    r\FunctionReflectionFactory::class => DI\object(r\FunctionReflectionFactoryDI::class),
 
-    PHPStan\Reflection\PropertiesClassReflectionExtension::class => [
-        DI\get(PHPStan\Reflection\Php\PhpClassReflectionExtension::class),
-        DI\get(PHPStan\Reflection\Annotations\AnnotationsPropertiesClassReflectionExtension::class),
-        DI\get(PHPStan\Reflection\PhpDefect\PhpDefectClassReflectionExtension::class),
+    r\PropertiesClassReflectionExtension::class => [
+        DI\get(r\Php\PhpClassReflectionExtension::class),
+        DI\get(r\Annotations\AnnotationsPropertiesClassReflectionExtension::class),
+        DI\get(r\PhpDefect\PhpDefectClassReflectionExtension::class),
     ],
 
-    PHPStan\Reflection\MethodsClassReflectionExtension::class => [
-        DI\get(PHPStan\Reflection\Php\PhpClassReflectionExtension::class),
-        DI\get(PHPStan\Reflection\Annotations\AnnotationsMethodsClassReflectionExtension::class),
+    r\MethodsClassReflectionExtension::class => [
+        DI\get(r\Php\PhpClassReflectionExtension::class),
+        DI\get(r\Annotations\AnnotationsMethodsClassReflectionExtension::class),
     ],
 
     PHPStan\Type\DynamicMethodReturnTypeExtension::class => [
