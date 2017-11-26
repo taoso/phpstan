@@ -23,7 +23,6 @@
     "require-dev": {
         "jakub-onderka/php-parallel-lint": "^0.9",
         "satooshi/php-coveralls": "^1.0",
-        "phing/phing": "^2.16.0",
         "phpunit/phpunit": "^6.0.7",
         "squizlabs/php_codesniffer": "^2.8"
     },
@@ -32,5 +31,12 @@
     },
     "autoload-dev": {
         "classmap": ["tests/PHPStan", "tests/TestCase.php"]
+    },
+    "scripts": {
+        "lint": "./vendor/bin/parallel-lint --exclude tests/PHPStan/Analyser/data --exclude tests/PHPStan/Rules/Methods/data --exclude tests/PHPStan/Rules/Functions/data src tests",
+        "cs": "./vendor/bin/phpcs --standard=build/ruleset.xml --extensions=php --encoding=utf-8 --ignore=tests/notAutoloaded --ignore=tests/*/data --ignore=tests/*/traits -sp src tests",
+        "cs-fix": "vendor/bin/phpcbf --standard=build/ruleset.xml --extensions=php --encoding=utf-8 --ignore=tests/notAutoloaded --ignore=tests/*/data -sp src tests",
+        "test": "./vendor/bin/phpunit -c tests/phpunit.xml tests/PHPStan",
+        "phpstan": "bin/phpstan analyse -l 5 --ignore-path tests/*/data* --ignore-path tests/notAutoloaded --ignore-path tests/PHPStan/Analyser/traits --ignore-error PHPUnit_Framework_MockObject_MockObject src tests/PHPStan"
     }
 }
