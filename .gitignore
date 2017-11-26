@@ -4,3 +4,4 @@
 /.idea
 /.phpcd*
 /tests/tmp/
+/.workspace.vim
