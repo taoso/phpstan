@@ -43,10 +43,6 @@ class CallStaticMethodsRuleTest extends \PHPStan\Rules\AbstractRuleTest
                 54,
             ],
             [
-                'Static method CallStaticMethods\Foo::test() invoked with 1 parameter, 0 required.',
-                56,
-            ],
-            [
                 'Call to protected static method baz() of class CallStaticMethods\Foo.',
                 57,
             ],
@@ -93,6 +89,10 @@ class CallStaticMethodsRuleTest extends \PHPStan\Rules\AbstractRuleTest
     {
         $this->analyse([__DIR__ . '/data/call-interface-methods.php'], [
             [
+                'Call to an undefined static method Baz::fooStaticMethod().',
+                20,
+            ],
+            [
                 'Call to an undefined static method Baz::barStaticMethod().',
                 21,
             ],
@@ -129,16 +129,8 @@ class CallStaticMethodsRuleTest extends \PHPStan\Rules\AbstractRuleTest
                 37,
             ],
             [
-                'Method StaticCallsToInstanceMethods\Foo::doFoo() invoked with 1 parameter, 0 required.',
-                38,
-            ],
-            [
                 'Call to private method doPrivateFoo() of class StaticCallsToInstanceMethods\Foo.',
                 40,
-            ],
-            [
-                'Method StaticCallsToInstanceMethods\Foo::doFoo() invoked with 1 parameter, 0 required.',
-                43,
             ],
         ]);
     }
