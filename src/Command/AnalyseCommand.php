@@ -28,6 +28,11 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
 
     const DEFAULT_LEVEL = 0;
 
+    /**
+     * @var \Psr\Container\ContainerInterface
+     */
+    private $container;
+
     protected function configure()
     {
         $this->setName(self::NAME)
@@ -51,13 +56,31 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->initAutoload($input);
+        $this->initContainer($input);
+        $this->setMiscOptions($input);
+        $this->initRules($input);
+
+        $stderr = ($output instanceof ConsoleOutputInterface) ? $output->getErrorOutput() : $output;
+        $paths = $input->getArgument('paths');
+
+        $application = $this->container->get(AnalyseApplication::class);
+
+        return $application->analyse($paths, $output, $stderr);
+    }
+
+    private function initAutoload(InputInterface $input)
+    {
         $autoloadFiles = $input->getOption(self::OPTION_AUTOLOAD_FILE);
         foreach ($autoloadFiles as $autoloadFile) {
             if (is_file($autoloadFile)) {
                 require_once $autoloadFile;
             }
         }
+    }
 
+    private function initContainer(InputInterface $input)
+    {
         $builder = new \DI\ContainerBuilder();
         $builder->addDefinitions(__DIR__.'/../../conf/di.php');
 
@@ -89,27 +112,37 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
         $container = $builder->build();
         $container->set(\Interop\Container\ContainerInterface::class, $container);
 
+        $this->container = $container;
+
+        return $this->container;
+    }
+
+    private function setMiscOptions(InputInterface $input)
+    {
         $ignorePathPatterns = $input->getOption(self::OPTION_IGNORE_PATH);
         if ($ignorePathPatterns) {
-            $container->set('ignorePathPatterns', $ignorePathPatterns);
+            $this->container->set('ignorePathPatterns', $ignorePathPatterns);
         }
         $ignoreErrors = $input->getOption(self::OPTION_IGNORE_ERROR);
 
         if ($ignoreErrors) {
-            $container->set('ignoreErrors', $ignoreErrors);
+            $this->container->set('ignoreErrors', $ignoreErrors);
         }
+    }
 
+    private function initRules(InputInterface $input)
+    {
         $levelOption = $input->getOption(self::OPTION_LEVEL);
         $levelOption = $levelOption ? (int) $levelOption : self::DEFAULT_LEVEL;
 
         switch ($levelOption) {
-            case 2:
-                $container->set('checkThisOnly', false);
-                break;
-            case 5:
-                $container->set('checkFunctionArgumentTypes', true);
-                $container->set('enableUnionTypes', true);
-                break;
+        case 2:
+            $this->container->set('checkThisOnly', false);
+            break;
+        case 5:
+            $this->container->set('checkFunctionArgumentTypes', true);
+            $this->container->set('enableUnionTypes', true);
+            break;
         }
 
         $rules = $input->getOption(self::OPTION_RULE);
@@ -123,16 +156,5 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
         }
 
         RegistryFactory::setRules($rules);
-
-        $stderr = ($output instanceof ConsoleOutputInterface) ? $output->getErrorOutput() : $output;
-        if (PHP_VERSION_ID >= 70100 && !property_exists(Catch_::class, 'types')) {
-            $stderr->writeln(
-                'You\'re running PHP >= 7.1, but you still have PHP-Parser version 2.x. This will lead to parse errors in case you use PHP 7.1 syntax like nullable parameters, iterable and void typehints, union exception types, or class constant visibility. Update to PHP-Parser 3.x to dismiss this message.'
-            );
-        }
-
-        $application = $container->get(AnalyseApplication::class);
-
-        return $application->analyse($input->getArgument('paths'), $output, $stderr);
     }
 }
