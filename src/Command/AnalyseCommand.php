@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
-use Symfony\Component\Console\Style\StyleInterface;
 use PHPStan\Rules\RegistryFactory;
 use PHPStan\Reflection\PropertiesClassReflectionExtension;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
@@ -137,55 +136,19 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
 
         RegistryFactory::setRules($rules);
 
-        $showProgress = !$input->getOption(self::OPTION_NO_PROGRESS);
         $stderr = ($output instanceof ConsoleOutputInterface) ? $output->getErrorOutput() : $output;
-        $errorStyle = new ErrorsConsoleStyle($input, $stderr, $showProgress);
-        $consoleStyle = new ErrorsConsoleStyle($input, $output);
-        $memoryLimitFile = $container->get('memoryLimitFile');
-        if (file_exists($memoryLimitFile)) {
-            $errorStyle->note(sprintf(
-                "PHPStan crashed in the previous run probably because of excessive memory consumption.\nIt consumed around %s of memory.\n\nTo avoid this issue, increase the memory_limit directive in your php.ini file here:\n%s\n\nIf you can't or don't want to change the system-wide memory limit, run PHPStan like this:\n%s",
-                file_get_contents($memoryLimitFile),
-                php_ini_loaded_file(),
-                sprintf('php -d memory_limit=XX %s', implode(' ', $_SERVER['argv']))
-            ));
-            unlink($memoryLimitFile);
-        }
         if (PHP_VERSION_ID >= 70100 && !property_exists(Catch_::class, 'types')) {
-            $errorStyle->note(
+            $stderr->writeln(
                 'You\'re running PHP >= 7.1, but you still have PHP-Parser version 2.x. This will lead to parse errors in case you use PHP 7.1 syntax like nullable parameters, iterable and void typehints, union exception types, or class constant visibility. Update to PHP-Parser 3.x to dismiss this message.'
             );
         }
-        $this->setUpSignalHandler($errorStyle, $memoryLimitFile);
 
         $application = $container->get(AnalyseApplication::class);
-        return $this->handleReturn(
-            $application->analyse(
-                $input->getArgument('paths'),
-                $consoleStyle,
-                $errorStyle,
-                $defaultLevelUsed
-            ),
-            $memoryLimitFile
+        return $application->analyse(
+            $input->getArgument('paths'),
+            $output,
+            $stderr,
+            $defaultLevelUsed
         );
-    }
-
-    private function handleReturn(int $code, string $memoryLimitFile): int
-    {
-        unlink($memoryLimitFile);
-        return $code;
-    }
-
-    private function setUpSignalHandler(StyleInterface $consoleStyle, string $memoryLimitFile)
-    {
-        if (function_exists('pcntl_signal')) {
-            pcntl_signal(SIGINT, function () use ($consoleStyle, $memoryLimitFile) {
-                if (file_exists($memoryLimitFile)) {
-                    unlink($memoryLimitFile);
-                }
-                $consoleStyle->newLine();
-                exit(1);
-            });
-        }
     }
 }

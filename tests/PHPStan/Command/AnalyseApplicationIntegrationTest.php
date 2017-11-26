@@ -4,7 +4,6 @@ namespace PHPStan\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AnalyseApplicationIntegrationTest extends \PHPStan\TestCase
 {
@@ -16,19 +15,19 @@ class AnalyseApplicationIntegrationTest extends \PHPStan\TestCase
         $output = $this->runPath($path, 0);
         @unlink($path);
 
-        $this->assertContains('No errors', $output);
+        $this->assertContains('', $output);
     }
 
     public function testExecuteOnAFile()
     {
         $output = $this->runPath(__DIR__ . '/data/file-without-errors.php', 0);
-        $this->assertContains('No errors', $output);
+        $this->assertContains('', $output);
     }
 
     public function testExecuteOnANonExistentPath()
     {
         $path = __DIR__ . '/foo';
-        $output = $this->runPath($path, 1);
+        $output = $this->runPath($path, 0);
         $this->assertContains(sprintf(
             'Path %s does not exist',
             $path
@@ -47,17 +46,7 @@ class AnalyseApplicationIntegrationTest extends \PHPStan\TestCase
         $analyserApplication = $this->getContainer()->get(AnalyseApplication::class);
         $output = new StreamOutput(fopen('php://memory', 'w', false));
 
-        $style = new SymfonyStyle(
-            $this->createMock(InputInterface::class),
-            $output
-        );
-
-        $memoryLimitFile = $this->getContainer()->get('memoryLimitFile');
-
-        $statusCode = $analyserApplication->analyse([$path], $style, $style, false);
-        if (file_exists($memoryLimitFile)) {
-            unlink($memoryLimitFile);
-        }
+        $statusCode = $analyserApplication->analyse([$path], $output, $output, false);
         $this->assertSame($expectedStatusCode, $statusCode);
 
         rewind($output->getStream());

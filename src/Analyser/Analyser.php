@@ -81,11 +81,10 @@ class Analyser
 
     /**
      * @param string[] $files
-     * @param bool $onlyFiles
      * @param \Closure|null $progressCallback
      * @return string[]|\PHPStan\Analyser\Error[] errors
      */
-    public function analyse(array $files, bool $onlyFiles, \Closure $progressCallback = null): array
+    public function analyse(array $files, bool $onlyFiles = false, \Closure $progressCallback = null): array
     {
         $errors = [];
 

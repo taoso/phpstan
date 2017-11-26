@@ -35,7 +35,6 @@ $parameters = [
     'ignoreErrors' => [],
     'reportUnmatchedIgnoredErrors' =>  true,
     'earlyTerminatingMethodCalls' => [],
-    'memoryLimitFile' => DI\string('{tmpDir}/.memory_limit'),
     'customRulesetUsed' => false,
     'checkThisOnly' => true,
     'checkFunctionArgumentTypes' => true,
@@ -73,7 +72,6 @@ $services = [
     ]),
 
     PHPStan\Command\AnalyseApplication::class => $obj([
-        'memoryLimitFile',
         'fileExtensions',
         'ignorePathPatterns',
     ]),
