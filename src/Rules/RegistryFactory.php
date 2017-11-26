@@ -72,7 +72,7 @@ class RegistryFactory
         foreach (self::RULES as list($ruleLevel, $className)) {
             if ($ruleLevel <= $level) {
                 $rule = str_replace($prefix, '', $className);
-                $rules[] = $rule;
+                $rules[] = "[level:$ruleLevel] ".$rule;
             }
         }
 

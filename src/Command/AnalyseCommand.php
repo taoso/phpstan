@@ -132,10 +132,10 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
 
     private function initRules(InputInterface $input)
     {
-        $levelOption = $input->getOption(self::OPTION_LEVEL);
-        $levelOption = $levelOption ? (int) $levelOption : self::DEFAULT_LEVEL;
+        $level = (int)$input->getOption(self::OPTION_LEVEL);
+        $level = $level ? $level : self::DEFAULT_LEVEL;
 
-        switch ($levelOption) {
+        switch ($level) {
         case 2:
             $this->container->set('checkThisOnly', false);
             break;
@@ -147,7 +147,7 @@ class AnalyseCommand extends \Symfony\Component\Console\Command\Command
 
         $rules = $input->getOption(self::OPTION_RULE);
         if (!$rules) {
-            $rules = RegistryFactory::getRuleArgList($levelOption);
+            $rules = RegistryFactory::getRuleArgList($level);
         }
 
         $excludeRules = $input->getOption(self::OPTION_EXCLUED_RULE);
